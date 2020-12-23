@@ -1,14 +1,20 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import AppLoading from 'expo-app-loading'
 import {useFonts} from 'expo-font'
 import {enableScreens} from 'react-native-screens'
 
-import LandingScreen from './screens/LandingScreen'
+import {createStore} from 'redux'
+import {Provider} from 'react-redux'
+import favoritesReducer from './store/favorites'
+
+import FullStackNavigator from './navigation/FullStackNavigator'
 
 enableScreens();
 
+const store = createStore(favoritesReducer);
 
 export default function App() {
 
@@ -22,7 +28,9 @@ export default function App() {
   }
 
   return (
-    <LandingScreen />
+    <Provider store={store}>
+      <FullStackNavigator />
+    </Provider>
   );
 
 }

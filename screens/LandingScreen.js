@@ -1,27 +1,57 @@
-import React, {useState} from 'react';
-import {View, Text, StyleSheet, Dimensions, Image} from 'react-native'
+import React, {useState, useEffect} from 'react';
+import {View, Text, StyleSheet, Dimensions, Image, TouchableOpacity} from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch, useSelector} from 'react-redux'
+import * as actions from '../store/favoriteActions'
 import Colors from '../constants/Colors'
 import Icon from 'react-native-ico-christmas';
 import demoArray from '../models/demoPhotoData'
-import Demo from '../assets/demo.jpg'
-import Demo1 from '../assets/demo_1.jpg'
 import Demo2 from '../assets/demo_2.jpg'
-import Demo3 from '../assets/demo_3.jpg'
-import Demo4 from '../assets/demo_4.jpg'
-import Carousel from '../components/Carousel'
-import XmasIconNames from '../constants/ChristmasIcons'
+
 
 const LandingScreen = (props) => {
 
+    const dispatch = useDispatch();
+    const favs = useSelector(state => state)
+
+    console.log(favs)
+
     const [chosenImage, setChosenImage] = useState(Demo2)
-    const [chosenImageId, setChosenImageId] = useState(1)
+    const [chosenImageId, setChosenImageId] = useState("")
+
+    const getData = async () => {
+        try {
+          const jsonValue = await AsyncStorage.getItem('@favorites')
+          return jsonValue != null ? JSON.parse(jsonValue) : null;
+        } catch(e) {
+          console.log(e)
+        }
+      }
+    
+      useEffect(() => {
+        getData()
+        .then(pastFavorites => {
+          if (pastFavorites){
+            dispatch(actions.setPhotos(pastFavorites))
+          }
+        })
+      }, [])
 
     const randomNumberGenerator = () => {
-        return Math.floor(Math.random() * 5)
+        return Math.floor(Math.random() * demoArray.length)
     }
 
-
-    
+    const shufflePhoto = () => {
+        const rand = randomNumberGenerator();
+        if (chosenImageId === demoArray[rand].id){
+            randomNumberGenerator();
+            setChosenImageId(demoArray[rand].id)
+            setChosenImage(demoArray[rand].image)
+        } else {
+            setChosenImageId(demoArray[rand].id)
+            setChosenImage(demoArray[rand].image)
+        }
+    }
 
     return ( 
         <View style={styles.screen}>
@@ -42,7 +72,38 @@ const LandingScreen = (props) => {
                 </View>
             </View>
             <View style={styles.imageHolder}>
-                <Image source={chosenImage} style={{height: '100%', width: '100%', resizeMode: 'cover'}} />
+                <Image source={chosenImage} style={{height: '100%', width: '100%', resizeMode: 'contain'}} />
+            </View>
+            <View>
+                <View style={{height: 45, width: 100, borderRadius: 20, backgroundColor: Colors.gold, marginTop: 30, justifyContent: 'center', alignItems:'center'}}>
+                    <TouchableOpacity style={{height: '100%', width: '100%', justifyContent: 'center', alignItems:'center'}} onPress={shufflePhoto}>
+                        <Text style={{fontFamily: 'xmas-bold', color: 'white', fontSize: 28}}>
+                            Shuffle
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View>
+                <View style={{height: 45, width: 100, borderRadius: 20, backgroundColor: Colors.green.dark, marginTop: 30, justifyContent: 'center', alignItems:'center'}}>
+                    <TouchableOpacity style={{height: '100%', width: '100%', justifyContent: 'center', alignItems:'center'}} onPress={() => {
+                        props.navigation.navigate('Gallery')
+                    }}>
+                        <Text style={{fontFamily: 'xmas-bold', color: 'white', fontSize: 28}}>
+                            Gallery
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View>
+                <View style={{height: 45, width: 120, borderRadius: 20, backgroundColor: 'white', marginTop: 30, justifyContent: 'center', alignItems:'center'}}>
+                    <TouchableOpacity style={{height: '100%', width: '100%', justifyContent: 'center', alignItems:'center'}} onPress={() => {
+                        props.navigation.navigate('Favorites')
+                    }}>
+                        <Text style={{fontFamily: 'xmas-bold', color: Colors.red.dark, fontSize: 28}}>
+                            Favorites
+                        </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
         </View>
      );
@@ -80,11 +141,16 @@ const styles = StyleSheet.create({
         alignItems:'center'
     },
     imageHolder: {
-        height: 300,
-        width: 300,
-        borderRadius: 150,
+        height: 320,
+        width: 320,
+        borderRadius: 15,
         overflow: 'hidden',
-        marginTop: 50
+        marginTop: 50,
+        shadowColor: 'black',
+        shadowOpacity: 0.46,
+        shadowOffset: { width: 0, height: 2},
+        shadowRadius: 10,
+        elevation: 3,
     }
 })
  

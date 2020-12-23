@@ -1,8 +1,7 @@
 class Photo {
-    constructor(id, localRoute, year){
+    constructor(id, image){
         this.id = id;
-        this.localRoute = localRoute;
-        this.year = year;
+        this.image = image;
     }
 }
 

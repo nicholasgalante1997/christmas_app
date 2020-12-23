@@ -4,11 +4,14 @@
     "slug": "christmas_app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "platforms": [
+      "ios"
+    ],
+    "icon": "./assets/appstore.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/appstore.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#146B3A"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -17,16 +20,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      }
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
+      "supportsTablet": false,
+      "bundleIdentifier": "com.nickgchristmasapp_",
+      "buildNumber": "1.0.0"
     }
   }
 }

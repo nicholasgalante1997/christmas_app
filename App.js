@@ -1,14 +1,30 @@
-import { StatusBar } from 'expo-status-bar';
-import React from 'react';
+import React, {useState} from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 
+import AppLoading from 'expo-app-loading'
+import {useFonts} from 'expo-font'
+import {enableScreens} from 'react-native-screens'
+
+import LandingScreen from './screens/LandingScreen'
+
+enableScreens();
+
+
 export default function App() {
+
+  let [fontsLoaded] = useFonts({
+    "xmas-bold": require('./fonts/MountainsofChristmas-Bold.ttf'),
+    "xmas-lite": require('./fonts/MountainsofChristmas-Regular.ttf')
+  });
+
+  if (!fontsLoaded){
+    return <AppLoading />
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <LandingScreen />
   );
+
 }
 
 const styles = StyleSheet.create({
